@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                         Helvetica, Arial, sans-serif;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            background-color: #222;
+            color: #eee;
+        }
+        #countdown {
+            display: flex;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .time-block {
+            padding: 2rem;
+            text-align: center;
+        }
+        .time-block span {
+            display: block;
+            font-size: 1rem;
+            font-weight: 300;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>COUNTDOWN TO 2030</h1>
+        <div id="countdown">
+            <div class="time-block" id="days">00<span>Days</span></div>
+            <div class="time-block" id="hours">00<span>Hours</span></div>
+            <div class="time-block" id="minutes">00<span>Minutes</span></div>
+            <div class="time-block" id="seconds">00<span>Seconds</span></div>
+        </div>
+        <h2 id="message" style="text-align: center; display: none;"></h2>
+    </div>
+
+    <script>
+        // 1. Set the target date (January 1st, 2030)
+        // We use new Date(year, monthIndex, day, hour, minute, second)
+        const targetDate = new Date(2030, 0, 1, 0, 0, 0);
+
+        // 2. Get references to the HTML elements
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const countdownEl = document.getElementById('countdown');
+        const messageEl = document.getElementById('message');
+
+        // 3. Create the update function
+        function updateCountdown() {
+            // Get the current moment
+            const now = new Date();
+
+            // Calculate the difference in milliseconds
+            // This is the "golden key" math we discussed!
+            const diffInMillis = targetDate.getTime() - now.getTime();
+
+            // 4. Check if the countdown is over
+            if (diffInMillis < 0) {
+                clearInterval(timerInterval); // Stop the timer
+                countdownEl.style.display = 'none'; // Hide the clock
+                messageEl.style.display = 'block';  // Show the message
+                messageEl.innerHTML = "Happy New Year!";
+                return; // Stop the function
+            }
+
+            // 5. Convert milliseconds into days, hours, minutes, seconds
+            // 1000ms in 1 sec, 60s in 1 min, 60m in 1 hr, 24h in 1 day
+            const totalSeconds = Math.floor(diffInMillis / 1000);
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const totalHours = Math.floor(totalMinutes / 60);
+
+            const days = Math.floor(totalHours / 24);
+            const hours = totalHours % 24;      // Remainder hours
+            const minutes = totalMinutes % 60;  // Remainder minutes
+            const seconds = totalSeconds % 60;  // Remainder seconds
+
+            // 6. Display the values on the page
+            // .padStart(2, '0') adds a '0' if the number is less than 10
+            daysEl.innerHTML = `${String(days).padStart(2, '0')}<span>Days</span>`;
+            hoursEl.innerHTML = `${String(hours).padStart(2, '0')}<span>Hours</span>`;
+            minutesEl.innerHTML = `${String(minutes).padStart(2, '0')}<span>Minutes</span>`;
+            secondsEl.innerHTML = `${String(seconds).padStart(2, '0')}<span>Seconds</span>`;
+        }
+
+        // 7. Run the function every second (1000 milliseconds)
+        // We store the interval in a variable so we can stop it later
+        const timerInterval = setInterval(updateCountdown, 1000);
+
+        // Run it once immediately so the page doesn't show "00" on load
+        updateCountdown();
+
+    </script>
+</body>
+</html>
